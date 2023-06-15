@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
+
   @override
   State<Expenses> createState() {
     return _Expenses();
@@ -31,11 +32,48 @@ class _Expenses extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
-        context: context, builder: (ctx) => const NewExpense());
+      isScrollControlled: true,
+      context: context,
+      builder: (ctx) => NewExpense(addExpense),
+    );
+  }
+
+  void addExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.add(expense);
+    });
+  }
+
+  void removeExpense(Expense expense) {
+    final expenseIndex = _registeredExpenses.indexOf(expense);
+    setState(() {
+      _registeredExpenses.remove(expense);
+    });
+    ScaffoldMessenger.of(context).clearSnackBars();
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text('Expense deleted'),
+      duration: const Duration(seconds: 3),
+      action: SnackBarAction(
+        label: 'Undo',
+        onPressed: () {
+          setState(() {
+            _registeredExpenses.insert(expenseIndex, expense);
+          });
+        },
+      ),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = const Center(
+      child: Text('No expenses found. Start adding some!'),
+    );
+    if (_registeredExpenses.isNotEmpty) {
+      mainContent = ExpensesList(
+          expenses: _registeredExpenses, removedExpense: removeExpense);
+    }
     return Scaffold(
         // we need a colum because thoe widget a placed on top of each other
         appBar: AppBar(title: const Text('Flutter ExpenseTracker'), actions: [
@@ -49,7 +87,7 @@ class _Expenses extends State<Expenses> {
             const Text('The chart'),
             // for better prcatice i create the logic for the ExpensesList in another class which is basically using a listview and them get the data from here.
             Expanded(
-              child: ExpensesList(expenses: _registeredExpenses),
+              child: mainContent,
             )
           ],
         ));
