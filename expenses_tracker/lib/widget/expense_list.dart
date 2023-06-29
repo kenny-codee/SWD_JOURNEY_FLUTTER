@@ -20,6 +20,12 @@ class ExpensesList extends StatelessWidget {
       itemCount: expenses.length,
       // itemBuilder takes a function that returns a widget and basically the parameter of the function is bctx and an int.
       itemBuilder: (ctx, index) => Dismissible(
+          background: Container(
+            color: Theme.of(context).colorScheme.error.withOpacity(0.75),
+            margin: EdgeInsets.symmetric(
+              horizontal: Theme.of(context).cardTheme.margin!.horizontal,
+            ),
+          ),
           onDismissed: (direction) {
             removedExpense(expenses[index]);
           },

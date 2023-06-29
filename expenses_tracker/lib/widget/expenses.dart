@@ -1,3 +1,5 @@
+import 'package:expenses_tracker/widget/charts/chart_bar.dart';
+import 'package:expenses_tracker/widget/charts/charts.dart';
 import 'package:expenses_tracker/widget/expense_list.dart';
 import 'package:expenses_tracker/models/expense.dart';
 import 'package:expenses_tracker/widget/new_expense.dart';
@@ -32,6 +34,7 @@ class _Expenses extends State<Expenses> {
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
       context: context,
       builder: (ctx) => NewExpense(addExpense),
@@ -67,6 +70,8 @@ class _Expenses extends State<Expenses> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     Widget mainContent = const Center(
       child: Text('No expenses found. Start adding some!'),
     );
@@ -82,14 +87,23 @@ class _Expenses extends State<Expenses> {
             icon: const Icon(Icons.add),
           )
         ]),
-        body: Column(
-          children: [
-            const Text('The chart'),
-            // for better prcatice i create the logic for the ExpensesList in another class which is basically using a listview and them get the data from here.
-            Expanded(
-              child: mainContent,
-            )
-          ],
-        ));
+        body: width < 600
+            ? Column(
+                children: [
+                  Chart(expenses: _registeredExpenses),
+                  // for better prcatice i create the logic for the ExpensesList in another class which is basically using a listview and them get the data from here.
+                  Expanded(
+                    child: mainContent,
+                  )
+                ],
+              )
+            : Row(
+                children: [
+                  Expanded(child: Chart(expenses: _registeredExpenses)),
+                  Expanded(
+                    child: mainContent,
+                  )
+                ],
+              ));
   }
 }

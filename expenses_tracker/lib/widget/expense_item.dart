@@ -16,8 +16,15 @@ class ExpenseItem extends StatelessWidget {
           horizontal: 20,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(expenseItem.title),
+            Text(
+              expenseItem.title,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontSize: 16,
+                  ),
+            ),
+            const SizedBox(height: 4),
             Row(
               children: [
                 // since Text is expecting a string argument and amount is an int we have to convert it to string.
