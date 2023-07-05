@@ -7,15 +7,14 @@ import 'package:meals/data/dummy_data.dart';
 import '../models/category.dart';
 
 class CatergoryScreen extends StatelessWidget {
-  const CatergoryScreen({
-    super.key,
-    required this.onToogleStatus,
-  });
+  const CatergoryScreen(
+      {super.key, required this.onToogleStatus, required this.availableMeals});
 
   final void Function(Meal meal) onToogleStatus;
+  final List<Meal> availableMeals;
 
   void onSelectedCategory(BuildContext context, Category category) {
-    final mealsList = dummyMeals
+    final mealsList = availableMeals
         .where((meals) => meals.categories.contains(category.id))
         .toList();
 
