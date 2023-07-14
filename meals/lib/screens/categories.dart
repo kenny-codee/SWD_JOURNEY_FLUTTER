@@ -8,9 +8,9 @@ import '../models/category.dart';
 
 class CatergoryScreen extends StatelessWidget {
   const CatergoryScreen(
-      {super.key, required this.onToogleStatus, required this.availableMeals});
+      {super.key, required this.availableMeals});
 
-  final void Function(Meal meal) onToogleStatus;
+  
   final List<Meal> availableMeals;
 
   void onSelectedCategory(BuildContext context, Category category) {
@@ -22,7 +22,7 @@ class CatergoryScreen extends StatelessWidget {
         builder: (ctx) => MealsScreen(
               title: category.title,
               meals: mealsList,
-              onToogleStatus: onToogleStatus,
+             
             )));
   }
 

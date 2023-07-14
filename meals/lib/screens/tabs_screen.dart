@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals/data/dummy_data.dart';
 import 'package:meals/models/meals.dart';
+import 'package:meals/provider/fav_provider.dart';
+import 'package:meals/provider/meals_riverpod.dart';
 import 'package:meals/screens/categories.dart';
 import 'package:meals/screens/filters_screen.dart';
 import 'package:meals/screens/meals_screen.dart';
@@ -13,15 +16,15 @@ const kInitialFilters = {
   Filters.vegetarian: false,
 };
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
   @override
-  State<TabsScreen> createState() {
+  ConsumerState<TabsScreen> createState() {
     return _TabsScreen();
   }
 }
 
-class _TabsScreen extends State<TabsScreen> {
+class _TabsScreen extends ConsumerState<TabsScreen> {
   int selctedPageIndex = 0;
 
   void _currentPage(int index) {
@@ -30,46 +33,40 @@ class _TabsScreen extends State<TabsScreen> {
     });
   }
 
-  final List<Meal> _favoriteMeal = [];
   Map<Filters, bool> _selectedFilters = kInitialFilters;
 
-  void showInfoMessage({
-    required String message,
-    SnackBarAction? snackBarAction,
-  }) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(message),
-      duration: const Duration(
-        seconds: 2,
-      ),
-      action: snackBarAction,
-    ));
-  }
+  // void showInfoMessage({
+  //   required String message,
+  //   SnackBarAction? snackBarAction,
+  // }) {
+  //
+  //     action: snackBarAction,
+  //   ));
+  // }
 
-  void onToggleMeal(Meal meal) {
-    final mealIndex = _favoriteMeal.indexOf(meal);
-    // final isExisting = _favoriteMeal.contains(meal);
-    if (_favoriteMeal.contains(meal)) {
-      setState(() {
-        _favoriteMeal.remove(meal);
-        showInfoMessage(
-            message: 'Meal is no longer a favorite',
-            snackBarAction: SnackBarAction(
-                label: 'Undo',
-                onPressed: () {
-                  setState(() {
-                    _favoriteMeal.insert(mealIndex, meal);
-                  });
-                }));
-      });
-    } else {
-      setState(() {
-        _favoriteMeal.add(meal);
-        showInfoMessage(message: 'Marked as favorite');
-      });
-    }
-  }
+  // void onToggleMeal(Meal meal) {
+  //   final mealIndex = _favoriteMeal.indexOf(meal);
+  //   // final isExisting = _favoriteMeal.contains(meal);
+  //   if (_favoriteMeal.contains(meal)) {
+  //     setState(() {
+  //       _favoriteMeal.remove(meal);
+  //       showInfoMessage(
+  //           message: 'Meal is no longer a favorite',
+  //           snackBarAction: SnackBarAction(
+  //               label: 'Undo',
+  //               onPressed: () {
+  //                 setState(() {
+  //                   _favoriteMeal.insert(mealIndex, meal);
+  //                 });
+  //               }));
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _favoriteMeal.add(meal);
+  //       showInfoMessage(message: 'Marked as favorite');
+  //     });
+  //   }
+  // }
 
   void screenType(String identifier) async {
     Navigator.of(context).pop();
@@ -85,7 +82,9 @@ class _TabsScreen extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final availableMeals = dummyMeals.where((meal) {
+    final meals = ref.watch(mealsProvider);
+
+    final availableMeals = meals.where((meal) {
       if (_selectedFilters[Filters.gluten]! && !meal.isGlutenFree) {
         return false;
       }
@@ -102,15 +101,14 @@ class _TabsScreen extends State<TabsScreen> {
     }).toList();
 
     Widget activePage = CatergoryScreen(
-      onToogleStatus: onToggleMeal,
       availableMeals: availableMeals,
     );
     String activePageTitle = 'Categories';
 
     if (selctedPageIndex == 1) {
+      final favMeals = ref.watch(favoriteMealsProvider);
       activePage = MealsScreen(
-        meals: _favoriteMeal,
-        onToogleStatus: onToggleMeal,
+        meals: favMeals,
       );
       activePageTitle = 'Your Favorites';
     }

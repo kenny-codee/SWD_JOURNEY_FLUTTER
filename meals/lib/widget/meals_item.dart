@@ -8,7 +8,6 @@ class MealItem extends StatelessWidget {
   const MealItem({
     super.key,
     required this.meals,
-    required this.onToogleStatus,
   });
 
   String get complexity {
@@ -25,12 +24,11 @@ class MealItem extends StatelessWidget {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (ctx) => DetialsMeals(
               mealsData: meals,
-              onToogleStatus: onToogleStatus,
             )));
   }
 
   final Meal meals;
-  final void Function(Meal meal) onToogleStatus;
+
   @override
   Widget build(BuildContext context) {
     return Card(

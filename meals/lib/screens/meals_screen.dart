@@ -8,19 +8,17 @@ class MealsScreen extends StatelessWidget {
     super.key,
     this.title,
     required this.meals,
-    required this.onToogleStatus,
   });
 
   final String? title;
   final List<Meal> meals;
-  final void Function(Meal meal) onToogleStatus;
+
   @override
   Widget build(BuildContext context) {
     Widget content = ListView.builder(
         itemCount: meals.length,
         itemBuilder: (ctx, index) => MealItem(
               meals: meals[index],
-              onToogleStatus: onToogleStatus,
             ));
 
     if (meals.isEmpty) {
