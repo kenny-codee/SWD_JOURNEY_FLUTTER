@@ -59,7 +59,17 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        // ignore: sort_child_properties_last
+        animation: animationController,
+        builder: (context, child) => SlideTransition(
+              position: Tween(
+                begin: const Offset(0, 0.3),
+                end: const Offset(0, 0),
+              ).animate(CurvedAnimation(
+                parent: animationController,
+                curve: Curves.easeInOut,
+              )),
+              child: child,
+            ),
         child: GridView(
           padding: const EdgeInsets.all(24),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -78,13 +88,6 @@ class _CategoriesScreenState extends State<CategoriesScreen>
                 },
               )
           ],
-        ),
-        animation: animationController,
-        builder: (context, child) => Padding(
-              padding: EdgeInsets.only(
-                top: 100 - animationController.value * 100,
-              ),
-              child: child,
-            ));
+        ));
   }
 }
