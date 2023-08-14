@@ -12,7 +12,14 @@ var endAlignment = Alignment.topLeft;
 
 class GradientContainer extends StatelessWidget {
 // A class should start with an upper case character and we can use the underscore to split the words. The class should also state what the objects or class want to do. As a class we need to inheret a kinda of data from a flutter widget. This tells flutter the way the class is gonna show the UI
-  const GradientContainer(this.colors, {super.key});
+  const GradientContainer(
+    this.colors, {
+    super.key,
+    // this.colors = const [
+    //   Color.fromARGB(255, 149, 45, 14),
+    //   Color.fromARGB(255, 241, 102, 59),
+    // ],
+  });
 
   final List<Color> colors;
   // final Color color2;
@@ -22,6 +29,7 @@ class GradientContainer extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: colors,
+          // colors.isNotEmpty ? colors : [Colors.blue, Colors.green],
           begin: startAlignment,
           end: endAlignment,
         ),
